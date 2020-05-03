@@ -2,12 +2,10 @@
 
 CC = gcc
 CFLAGS = -std=c99 -g -Wall -Werror
-LDFLAGS = -lm -lmagic
-HEADER_FILES = src
-C_SOURCE_FILES = src/apprentice.c
-OBJECT_FILES = $(C_SOURCE_FILES:.c=.o)
-EXECUTABLE_DIRECTORY = priv
-EXECUTABLE = $(EXECUTABLE_DIRECTORY)/apprentice
+LDLIBS = -lm -lmagic
+BEAM_FILES = _build/
+PRIV = priv/
+RM = rm -Rf
 
 # Unit test custom magic file
 
@@ -16,26 +14,16 @@ TEST_DIRECTORY = test
 TARGET_MAGIC = $(TEST_DIRECTORY)/elixir.mgc
 SOURCE_MAGIC = $(TEST_DIRECTORY)/elixir
 
-# Target
-
-all: $(EXECUTABLE) $(TARGET_MAGIC)
-
-# Compile
-
-$(EXECUTABLE): $(OBJECT_FILES) $(EXECUTABLE_DIRECTORY)
-	$(CC) $(OBJECT_FILES) -o $@ $(LDFLAGS)
-
-$(EXECUTABLE_DIRECTORY):
-	mkdir -p $(EXECUTABLE_DIRECTORY)
-
-.o:
-	$(CC) $(CFLAGS) -c $< -o $@
+priv/apprentice: src/apprentice.c
+	mkdir -p priv
+	$(CC) $(CFLAGS) $(LDLIBS) $^ -o $@
 
 # Test case
 
 $(TARGET_MAGIC): $(SOURCE_MAGIC)
 	cd $(TEST_DIRECTORY); $(MAGIC) -C -m elixir
 
-.PHONY: clean
 clean:
-	rm -f $(EXECUTABLE) $(OBJECT_FILES) $(BEAM_FILES)
+	$(RM) $(PRIV) $(BEAM_FILES)
+
+.PHONY: clean
