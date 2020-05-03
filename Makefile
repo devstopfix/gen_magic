@@ -29,7 +29,7 @@ $(EXECUTABLE_DIRECTORY):
 	mkdir -p $(EXECUTABLE_DIRECTORY)
 
 .o:
-	$(CC) $(CFLAGS) $< -o $@
+	$(CC) $(CFLAGS) -c $< -o $@
 
 # Test case
 
